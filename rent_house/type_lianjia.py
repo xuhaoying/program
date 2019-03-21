@@ -15,10 +15,9 @@ from pymongo import MongoClient
 class HouseInfos(object):
     '''房源信息解析'''
 
-    # 3.21 增加地区
     def __init__(self, html, area):
         self.html = html
-        self.area = area
+        self.area = area  # 3.21 增加地区
         self.soup = BeautifulSoup(self.html, "lxml")
         self.get_infos()
         self.save_in_mongo()
