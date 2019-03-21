@@ -1163,14 +1163,32 @@ with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElemen
 
 
 
-# soup = BeautifulSoup(html, "lxml")
+soup = BeautifulSoup(html, "lxml")
 
 # l = soup.find(attrs={"data-el":"houseComment"})
 # print(l.get_text())
  
 
 
-data = re.findall("g_conf.name = '(.*?)'", html)
-print(data)
+# data = re.findall("g_conf.name = '(.*?)'", html)
 
+# data = re.search("g_conf.name = '(.*?)'",html).group(1)
+
+# data = re.search("g_conf.coord = {(.*?)};", html)
+# data = re.search("g_conf.coord = {.*?longitude:.*?'(.*?)'.*?latitude:.*?'(.*?)'.*?};", html, re.S)
+# # data = re.search('''g_conf.coord = {
+# #     longitude: '(.*?)',
+# #     latitude: '(.*?)'
+# #   };''', html)
+
+# print(data)
+# print(data.group(1))
+# print(data.group(2))
+
+data = soup.select(".content__thumb--box li img")
+
+for img in data:
+    print(img['src'])
+
+print(data)
 

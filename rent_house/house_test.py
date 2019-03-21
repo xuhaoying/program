@@ -47,7 +47,8 @@ class HouseSpider(object):
 			house_href.append(house["href"])
 		return house_href
 
-	def get_one_page(self, url):
+	# 给数据库传入地区名， 按地区存储
+	def get_one_page(self, url, area):
 		# 获取一个列表页面
 		html = self.get_response(url)
 		house_href = self.get_href(html)
@@ -59,14 +60,14 @@ class HouseSpider(object):
 				continue
 			href = "https://hz.lianjia.com" + href
 			html = self.get_response(href)
-			house = HouseInfos(html)
+			house = HouseInfos(html, area)
 	
 	def start(self):
 		for area, page in AREA.items():
 			for i in range(1, page+1):
 				url = self.url.format(area, i)
 				try:
-					self.get_one_page(url)
+					self.get_one_page(url, area)
 				except Exception as e:
 					print("error", e)
 
