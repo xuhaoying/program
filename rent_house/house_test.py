@@ -26,6 +26,7 @@ class HouseSpider(object):
 	def get_response(self, url):
 		'''发送请求并获取数据'''
 		try:
+			time.sleep(0.1)
 			response = requests.get(url, headers=HEADERS)
 
 			if response.status_code != 200:

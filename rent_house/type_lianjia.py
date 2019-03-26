@@ -108,6 +108,20 @@ class HouseInfos(object):
             main_infos[lst.select_one("i")["class"][0]] = lst.get_text()
         # 添加至信息字典
         self.infos.update(main_infos)
+
+    def get_contact(self):
+        # 3.26 获取联系方式
+        try:
+            name = self.soup.select('.contact_name')[0]['title']
+        except Exception as e:
+            # print(e)
+            name = self.soup.select('.contact_name')[0].get_text()
+            
+        phone = re.search('<p class="content__aside__list--bottom oneline".*?>(.*?)</p>', self.html)
+        phone = phone.group(1) 
+        contact = {'name': name, 'phone':phone} 
+        self.infos['联系方式'] = contact
+
  
     def get_infos(self):
         # 得到房源信息字典
@@ -120,7 +134,6 @@ class HouseInfos(object):
         # 3.18 更改格式　{title, name, infos}
         # self.house_infos = {'title':self.house_title, 
         #                     'name': self.name, 'infos':self.infos}
-
         # 3.21 更改格式 {title, name, coord, area, infos}
         self.get_house_coord()
         self.house_infos = {'title':self.house_title, 'name': self.name,
@@ -132,6 +145,8 @@ class HouseInfos(object):
         self.get_main_infos()
         self.get_rent_price()
 
+        self.get_contact()  # 3.26增加联系方式
+
         # 3.21 添加房源缩略图，
         self.get_house_thumbnail()
         
@@ -140,7 +155,7 @@ class HouseInfos(object):
         # 将信息存入mongoDB中
         client = MongoClient("localhost", 27017)
         db = client['house_info']
-        myset1 = db['lianjia0321']
+        myset1 = db['lianjia0326']
         myset1.save(self.house_infos)
         # 更新数据存储格式　{'addr':xx, 'infos':xx}
         # 见update_lianjia
@@ -152,7 +167,5 @@ if __name__ == "__main__":
     with open("house_content.html", 'r', encoding="utf-8") as f:
         html = f.read()
     house = HouseInfos(html, "xihu")
-    # print(house.house_infos)
-    # HouseInfos(html).get_house_name()
-    # HouseInfos(html).get_house_coord()
+
 

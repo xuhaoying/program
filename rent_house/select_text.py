@@ -1161,8 +1161,6 @@ with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElemen
 '''
 
 
-
-
 soup = BeautifulSoup(html, "lxml")
 
 # l = soup.find(attrs={"data-el":"houseComment"})
@@ -1185,10 +1183,21 @@ soup = BeautifulSoup(html, "lxml")
 # print(data.group(1))
 # print(data.group(2))
 
-data = soup.select(".content__thumb--box li img")
+# data = soup.select(".content__thumb--box li img")
 
-for img in data:
-    print(img['src'])
+# for img in data:
+#     print(img['src'])
 
-print(data)
+
+
+
+# name = soup.select('.contact_name')[0]['title']
+phone = soup.select('p.content__aside__list--bottom oneline')
+if phone:
+  phone = phone[0].get_text()
+# print(name)
+
+phone = re.search('<p class="content__aside__list--bottom oneline".*?>(.*?)</p>', html)
+phone = phone.group(1)
+print(phone)
 
