@@ -111,18 +111,13 @@ class HouseInfos(object):
 
     def get_contact(self):
         # 3.26 获取联系方式
-        try:
-            name = self.soup.select('.contact_name')[0]['title']
-        except Exception as e:
-            # print(e)
-            name = self.soup.select('.contact_name')[0].get_text()
-            
-        phone = re.search('<p class="content__aside__list--bottom oneline".*?>(.*?)</p>', self.html)
-        phone = phone.group(1) 
+      
+        name = self.soup.select('.desc .name')[0].get_text()
+        phone = self.soup.select('.desc .phone')[0].get_text()
+      
         contact = {'name': name, 'phone':phone} 
         self.infos['联系方式'] = contact
 
- 
     def get_infos(self):
         # 得到房源信息字典
         self.get_house_title() # 标题
