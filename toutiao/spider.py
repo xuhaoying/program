@@ -19,14 +19,14 @@ def get_page_index(offset, keyword):
     data = {
         'autoload': 'true',
         'count': 20,
-        'cur_tab': 3,
+        'cur_tab': 1,
         'format': 'json',
         'keyword': keyword,
         'offset': offset,
     }
     params = urlencode(data)
-    base = 'http://www.toutiao.com/search_content/'
-    url = base + '?' + params
+    base = 'http://www.toutiao.com/search/?'
+    url = base + params
     try:
         response = requests.get(url)
         if response.status_code == 200:
@@ -105,18 +105,24 @@ def save_to_mongo(result):
 
 
 def main(offset):
-    text = get_page_index(offset, KEYWORD)
-    urls = parse_page_index(text)
-    for url in urls:
-        html = get_page_detail(url)
-        result = parse_page_detail(html, url)
-        if result: 
-            save_to_mongo(result)
+    # text = get_page_index(offset, KEYWORD)
+    # urls = parse_page_index(text)
+    # for url in urls:
+    #     html = get_page_detail(url)
+    #     result = parse_page_detail(html, url)
+    #     if result: 
+    #         save_to_mongo(result)
+
+    html = get_page_index(0, '街拍')
+    print(html)
+    print(parse_page_index(html))
 
 
 if __name__ == '__main__':
-    pool = Pool()
-    groups = ([x * 20 for x in range(GROUP_START, GROUP_END + 1)])
-    pool.map(main, groups)
-    pool.close()
-    pool.join()
+    # pool = Pool()
+    # groups = ([x * 20 for x in range(GROUP_START, GROUP_END + 1)])
+    # pool.map(main, groups)
+    # pool.close()
+    # pool.join()
+
+    main(0)
