@@ -8,7 +8,7 @@
 
 import requests
 from bs4 import BeautifulSoup
-
+from lxml import etree
 
 # 获取指定URL的HTML
 def get_response(url):
@@ -51,9 +51,9 @@ def get_house_href(soup):
 
 # 获取下一页的 url
 def get_next_page(soup):       
-    # 取页数的倒数第二个标签， 一般为下一页
-    next_page = soup.select('#rentid_D10_01 > a:nth-last-child(2)')
-    next_page_href = next_page['href']
+    mytree = etree.HTML(html)
+    mytree.xpath('//*[@id="rentid_D10_01"]/a[last()-1]/@href')
+
     # 获取当前页url
     now_page = soup.select('#rentid_D10_01 > a.pageNow')
     # 没有下一页了
@@ -61,7 +61,7 @@ def get_next_page(soup):
         return
     return next_page
     
-//*[@id="rentid_D10_01"]/a[7]
+
 
 if __name__ == '__main__':
     html = get_response("https://hz.zu.fang.com/house-a0151/")

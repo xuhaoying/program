@@ -1,13 +1,16 @@
-from lxml import etree
 import requests
+from lxml import etree
+from bs4 import BeautifulSoup
 
-url = "https://hz.zu.fang.com/house-a0151/"
+with open('sky.html') as f:
+    html = f.read()
 
-# mytree = 
+mytree = etree.HTML(html)
 
-response = requests.get(url)
-html = response.text
-with open('sky.html', 'w') as f:
-    f.write(html)
+# 倒数第二个
+print(mytree.xpath('//*[@id="rentid_D10_01"]/a[last()-1]/@href'))
 
-
+# soup = BeautifulSoup(html, 'lxml')
+# # next_page = soup.select('#rentid_D10_01 > a:nth-last-child(2)')
+# next_page = soup.select('#rentid_D10_01 > a:nth-child(7)')
+# print(next_page)
