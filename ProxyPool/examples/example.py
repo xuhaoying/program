@@ -21,7 +21,7 @@ def crawl(url, proxy):
 
 def main():
     proxy = get_proxy()
-    html = crawl('http://docs.jinkan.org/docs/flask/', proxy)
+    html = crawl('http://www.baisu.com', proxy)
     print(html)
 
 if __name__ == '__main__':
