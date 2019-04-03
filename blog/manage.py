@@ -14,5 +14,15 @@ def list():
 def listcopy():
     return render_template('list_copy.html')
 
+@app.route('/info/')
+def info():
+    return render_template('info.html')
+
+@app.route('/infocopy/')
+def infocopy():
+    return render_template('info_copy.html')
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
