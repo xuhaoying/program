@@ -39,7 +39,7 @@ class HouseInfos(object):
         if not desc:
             desc = "暂无数据"
         desc = '\n'.join(desc)
-        # self.infos["房源描述"] = desc
+        self.infos["房源描述"] = desc
         print(desc)
 
     def get_house_pictures(self):
