@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -22,7 +22,35 @@ def info():
 def infocopy():
     return render_template('info_copy.html')
 
+@app.route('/login', methods=["GET", "POST"])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        return '''
+        username: {}
+        password: {}
+        '''.format(username, password)
+
+@app.route('/register', methods=["GET", "POST"])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+    elif request.method == "POST":
+        username = request.form.get("username")
+        email = request.form.get("email")
+        url = request.form.get("url")
+        password = request.form.get("password")
+        return '''
+        username: {}
+        email: {}
+        url: {}
+        password: {}
+        '''.format(username, email, url, password)
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
