@@ -1,8 +1,40 @@
 import datetime
 import os
 from flask import Flask, render_template, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
 
 app = Flask(__name__)
+# 配置数据库
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@localhost:3306/blog"
+# 不追踪
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# 调试模式
+app.config['DEBUG'] = True
+
+db = SQLAlchemy(app)
+
+
+# 将app交给Manager管理， 由Manager启动程序
+manager = Manager(app)
+# 创建Migrate对象,指定关联的app和db
+migrate = Migrate(app, db)
+# 为manager增加做数据库迁移的子命令
+# 为数据库增加db子命令, 该命令具体操作由MigrateCommand提供
+manager.add_command('db', MigrateCommand)
+
+
+class Users(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), nullable=False, unique=True)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    url = db.Column(db.String(120), nullable=True)
+    password = db.Column(db.String(100), nullable=False)
+
+db.create_all()
 
 @app.route('/')
 def index():
@@ -83,4 +115,7 @@ def release():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=19480)
+    # app.run(debug=True, host="0.0.0.0", port=19480)
+    manager.run()
+
+
