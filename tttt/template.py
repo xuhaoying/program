@@ -1,18 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import abc
 
 
-class Fishing(object):
-    """
-    钓鱼模板基类
-    """
-    __metaclass__ = abc.ABCMeta
-
+class Fishing(metaclass=abc.ABCMeta):
     def finishing(self):
-        """
-        钓鱼方法中，确定了要执行哪些操作才能钓鱼
-        """
         self.prepare_bait()
         self.go_to_riverbank()
         self.find_location()
@@ -87,3 +77,4 @@ if __name__ == '__main__':
     # Simon 去钓鱼
     f = SimonFishing()
     f.finishing()
+
