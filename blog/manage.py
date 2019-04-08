@@ -1,3 +1,5 @@
+import datetime
+import os
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
@@ -50,7 +52,35 @@ def register():
         password: {}
         '''.format(username, email, url, password)
 
+@app.route('/release', methods=['GET', 'POST'])
+def release():
+    if request.method == 'GET':
+        return render_template('release.html')
+    else:
+        # 获取数据
+        author = request.form['author']
+        list = request.form['list']
+        print("author >> ", author)
+        print("list >> ", list)
+        # 有文件上传
+        if request.files:
+            picture = request.files['picutre']
+            ext = picture.filename.split('.')[-1]
+            ftime = datetime.datetime.now().strftime("%Y%m%d%H%M%S%f")
+            filename = ftime + '.' + ext
+            basedir = os.path.dirname(__file__)
+            upload_path = os.path.join(basedir, 'static/upload', filename)
+            picture.save(upload_path)
+            print("upload_path >> ", upload_path)
+
+        content = request.form['content']
+        print("content >> ", content)
+        return '''发布博客成功'''
+
+
+
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=19480)
