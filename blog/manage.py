@@ -1,5 +1,6 @@
 import datetime
 import os
+
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
@@ -34,7 +35,7 @@ class Users(db.Model):
     url = db.Column(db.String(120), nullable=True)
     password = db.Column(db.String(100), nullable=False)
 
-db.create_all()
+# db.create_all()
 
 @app.route('/')
 def index():
@@ -61,12 +62,25 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == "POST":
+        # 登录验证
+        # 接受用户名和密码
         username = request.form.get("username")
         password = request.form.get("password")
-        return '''
-        username: {}
-        password: {}
-        '''.format(username, password)
+        # 从数据库中验证, 并给出提示
+        # 查找
+        user = db.session.query(Users).filter_by(
+            username=username, password=password).first()
+        if user:
+            return "<script>alert('登录成功');</script>"
+
+        return '''<script>
+                alert('用户名或密码错误'); 
+                location.href='/login';
+                </script>'''
+        # return '''
+        # username: {}
+        # password: {}
+        # '''.format(username, password)
 
 @app.route('/register', methods=["GET", "POST"])
 def register():

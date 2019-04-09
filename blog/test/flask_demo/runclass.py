@@ -1,7 +1,9 @@
-from flask import Flask
+
+from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from sqlalchemy import or_
 
 # 导入pymsql, 并且将其伪装成MySQLdb
 # import pymysql
@@ -14,6 +16,10 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@localhost:3
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # 调试模式
 app.config['DEBUG'] = True
+
+# 配置数据库操作的自动提交
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
 
 # 在程序中， 通过db操作数据库
 db = SQLAlchemy(app)
@@ -44,6 +50,9 @@ class Users(db.Model):
     # 增加一个字段， isActive, 
     isActive = db.Column(db.Boolean, default=True)
 
+    def __repr__(self):
+        return "<Users: '{}'>".format(self.username)
+
 
 class Student(db.Model):
     __tablename__ = 'student'
@@ -64,26 +73,4 @@ class Course(db.Model):
     __tablename__ = 'course'
     id = db.Column(db.Integer, primary_key=True)
     cname = db.Column(db.String(30), unique=True, index=True)
-
-
-# 删除所有的表, 不要用
-# db.drop_all()
-# 将Users类映射到数据库（表不存在时才会创建）
-db.create_all()
-
-
-@app.route('/')
-def index():
-    return "这是首页"
-
-if __name__ == "__main__":
-    # app.run(debug=True, port=8888)
-    
-    # 指定调试模式 debug=True, app.config['DEBUG'] = True
-    # 指定端口 python3 run.py runserver --port xxxx
-    # 制定启动的IP地址 python3 run.py runserver --host 0.0.0.0
-    # python3 run.py runserver --host 0.0.0.0 --port xxxx
-
-    # 使用manager 启动服务
-    manager.run()
 
