@@ -1,0 +1,32 @@
+
+https://help.github.com/en/articles/changing-author-info
+
+git clone --bare https://github.com/用户名/库名.git
+cd repo.git
+
+在终端站粘贴下面的代码
+
+#!/bin/sh
+
+git filter-branch --env-filter '
+
+OLD_EMAIL="旧邮箱"
+CORRECT_NAME="正确的用户名"
+CORRECT_EMAIL="正确的邮箱"
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_COMMITTER_NAME="$CORRECT_NAME"
+    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+    export GIT_AUTHOR_NAME="$CORRECT_NAME"
+    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
+
+git push --force --tags origin 'refs/heads/*'
+cd ..
+rm -rf repo.git
+

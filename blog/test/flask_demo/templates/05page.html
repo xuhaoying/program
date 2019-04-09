@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/05query" method="get" enctype="multipart/form-data">
+            <input type="text" name="kw" value="{{kw}}"/>
+            <input type="submit" value="查询" />
+    </form>
+    
+    <table  border=1px style="text-align:center; width:600px;">
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>邮箱</th>
+                <th>状态</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{user.username}}</td>
+                <td>{{user.age}}</td>
+                <td>{{user.email}}</td>
+                <td> 
+                    {% if user.isActive %}
+                        启用
+                    {% else %}
+                        禁用
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            <tr colspan="4">
+                <a href="/05page?page=1">首页</a>
+                <a href="/05page?page={{prevPage}}">上一页</a>
+                <a href="/05page?page={{lastPage}}">尾页</a>
+            </tr>
+        </table>
+        <p>
+            当前查看的页数为第 <strong>{{ page }}</strong> 页
+        </p>
+</body>
+</html>

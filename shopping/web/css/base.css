@@ -1,0 +1,58 @@
+/* 页面基础样式 */
+body,h1,h2,h3,h4,h5,h6,p,ul,ol{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+body{
+	font:12px youyuan,Arial;   
+	color:#ccc;
+	background: #F1F3F4;
+	padding-top: 50px;
+}
+a{
+	color:#ccc;
+	text-decoration: none;
+}
+input:focus{
+	outline:none;
+}
+/* 外部容器样式 */
+#container{
+	width: 1000px;
+	margin: 0 auto;
+	
+}
+/* 通用底部 */
+#bottom{
+	margin-top: 30px;
+}
+.download{
+	float: right;
+}
+.download img{
+	width: 100px;
+}
+.service{
+	float: right;
+	width: 125px;
+	margin-right: 10px;
+}
+.service p{
+	font-size: 14px;
+	text-align: center;
+}
+.service img:last-child{
+	margin-top: 3px;
+}
+#footLogo{
+	width: 168px;
+	border-radius: 10px;
+}
+#footFont{
+	width: 650px;
+}
+#copy{
+	color: black;
+	text-align: center;
+}
