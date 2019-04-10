@@ -41,6 +41,7 @@ def get_area():
 def parse_one_page(html, area):  
     '''
     解析当前列表页面
+    解析列表页面
     得到当前列表页面所有房源URL, 并进行房源信息解析
     和 下一页的URL
     '''
@@ -56,6 +57,12 @@ def parse_one_page(html, area):
             print(e)
         # print(href)
         # break
+        html = get_response(href)
+        HouseInfos(html, area)
+
+        # print(href)
+        # break
+
     next_url = get_next_page(mytree)
     return next_url
 
@@ -75,7 +82,7 @@ def get_next_page(mytree):
     return next_page
     
 def main():
-    URL = "https://hz.zu.fang.com{}/"
+    URL = "https://hz.zu.fang.com{}"
     get_area()
     for href, area in AREA.items():
         url = URL.format(href)  # 地区的URL
@@ -94,10 +101,12 @@ def main():
 
 if __name__ == '__main__':
     # html = get_response("https://hz.zu.fang.com/house-a0151/i32/")
-    # # mytree = etree.HTML(html)
-    # # print(get_house_href(mytree))
-    # # print(get_next_page(mytree))
+    # mytree = etree.HTML(html)
+    # print(get_house_href(mytree))
+    # print(get_next_page(mytree))
     # print(parse_one_page(html, 'xihu'))
+    # get_area()
+    # print(AREA)
     main()
 
 

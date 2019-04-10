@@ -19,10 +19,10 @@ class HouseInfos(object):
     def get_house_title(self):
         # 获取房源标题
         title = self.tree.xpath('//*[@class="tab-cont clearfix"]/h1[@class="title"]/text()')
-        # print(title)
         if not title:
             title = "未知"
-        title = title[0]
+        else:
+            title = title[0]
         # print(title)
         self.house_title = title
 
@@ -41,6 +41,7 @@ class HouseInfos(object):
         self.latitude = str(coord.group(2))   # 维度
         self.coord = {"longitude": self.longitude, "latitude": self.latitude}
         # print(self.coord)
+        pass
 
     def get_descirbe(self):
         # 获取房源描述
@@ -55,7 +56,6 @@ class HouseInfos(object):
         # 房源大图列表
         picture_list = self.tree.xpath('//*[@class="bigImg"]/img/@src')
         # print(picture_list)
-        # 添加至信息字典
         self.infos["房源图片"] = picture_list
 
     def get_house_thumbnail(self):
@@ -82,11 +82,11 @@ class HouseInfos(object):
         # print(basic_info)
         # 添加至信息字典
         self.infos.update(basic_info)
-
+       
     def get_rent_price(self):
         # 获取租金
-        price_group = re.search('<div class="trl-item sty1"><i>(.*?)</i>(.*?)</div>', self.html, re.S) 
-        price = price_group.group(1) + price_group.group(2)
+        price = re.search('<div class="trl-item sty1"><i>(.*?)</i>(.*?)</div>', self.html, re.S)
+        price = price.group(1) + price.group(2)
         # 添加至信息字典
         self.infos["租金"] = price
 
@@ -106,7 +106,6 @@ class HouseInfos(object):
         name = re_con.group(1)
         phone = re_con.group(2)
         contact = {'name': name, 'phone':phone} 
-        # print(contact)
         self.infos['联系方式'] = contact
 
     def get_infos(self):
@@ -114,6 +113,7 @@ class HouseInfos(object):
         self.get_house_title() # 标题
         self.infos = {}  # 信息字典
         self.get_house_name()
+
         self.get_house_coord()
         self.house_infos = {'title':self.house_title, 'name': self.name,
                             'coord': self.coord, 'area':self.area, 'infos':self.infos}
@@ -124,6 +124,7 @@ class HouseInfos(object):
         self.get_main_infos()
         self.get_rent_price()
         self.get_contact() 
+
         self.get_house_thumbnail()
         
 
@@ -149,6 +150,7 @@ if __name__ == '__main__':
     # house_infos.get_basic_info()
     # house_infos.get_contact()
     # house_infos.save_in_mongo()
+    print(house_infos.house_infos)
 
 
 

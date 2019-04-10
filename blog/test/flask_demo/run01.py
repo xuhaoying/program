@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 import math
 
 # 导入pymsql, 并且将其伪装成MySQLdb
@@ -169,7 +169,10 @@ def query01():
     # users = db.session.query(Users).filter(or_(Users.age>40, Users.isActive==True)).all()
     # users = db.session.query(Users).filter(Users.age.in_([30, 33])).all()
     # users = db.session.query(Users).filter(Users.age.between(20,40)).all()
-    users = db.session.query(Users).filter_by(id=1).first()
+    # users = db.session.query(Users).filter_by(id=1).first()
+    # users = db.session.query(Users).order_by("age desc").all()
+    # users = db.session.query(Users).order_by("age desc, id").all()
+    users = db.session.query(func.sum(Users.age)).all()
     print(users)
     return "查询数据成功"
 
@@ -215,6 +218,22 @@ def page_views():
     return render_template("05page.html", 
     page=page, users=users, lastPage=lastPage, prevPage=prevPage, nextPage=nextPage)
 
+@app.route('/06aggregate')
+def aggregate_views():
+    result = db.session.query(func.sum(Users.age)).all()
+    print(result)
+    print('age sum : %d' % result[0])
+    result = db.session.query(func.avg(Users.age),
+    func.max(Users.age), func.min(Users.age)
+    ).all()
+    print(result)
+    result = result[0]
+    avg_age,  max_age, min_age = result[0], result[1], result[2]
+    
+    print("avg_age: %.2f" % avg_age)
+    print("max_age: %d" % max_age)
+    print("min_age: %d" % min_age)
+    return "聚合查询成功"
 
 
 if __name__ == "__main__":
