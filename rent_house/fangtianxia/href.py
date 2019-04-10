@@ -29,7 +29,7 @@ def get_response(url):
 # {'/house-a0153/': '江干', ...} 地区URL
 AREA = {}
 # 获取所有地区的URL
-def area():
+def get_area():
     html = get_response("https://hz.zu.fang.com/house-a0151/")
     soup = BeautifulSoup(html, 'lxml')   
     l = soup.select("#rentid_D04_01 > dd > a")
@@ -40,7 +40,7 @@ def area():
 
 def parse_one_page(html, area):  
     '''
-    解析列表页面
+    解析当前列表页面
     得到当前列表页面所有房源URL, 并进行房源信息解析
     和 下一页的URL
     '''
@@ -49,11 +49,13 @@ def parse_one_page(html, area):
     for href in href_list:
         # 对每个房源进行解析
         href = "https://hz.zu.fang.com" + href 
-        html = get_response(href)
-        HouseInfos(html, area)
+        try:
+            html = get_response(href)
+            house = HouseInfos(html, area)
+        except Exception as e:
+            print(e)
         # print(href)
         # break
-
     next_url = get_next_page(mytree)
     return next_url
 
@@ -74,24 +76,29 @@ def get_next_page(mytree):
     
 def main():
     URL = "https://hz.zu.fang.com{}/"
+    get_area()
     for href, area in AREA.items():
         url = URL.format(href)  # 地区的URL
         html = get_response(url)
         # 一个地区
         # 通过获取下一页进行翻页
         while True:
-            next_url = parse_one_page(html, area)
-            html = get_response(url)
-            if html is None:
-                break
+            try:
+                next_url = parse_one_page(html, area)
+                html = get_response(next_url)
+                if html is None:
+                    break
+            except Exception as e:
+                print(e)
 
 
 if __name__ == '__main__':
-    html = get_response("https://hz.zu.fang.com/house-a0151/i32/")
-    # mytree = etree.HTML(html)
-    # print(get_house_href(mytree))
-    # print(get_next_page(mytree))
-    print(parse_one_page(html, 'xihu'))
+    # html = get_response("https://hz.zu.fang.com/house-a0151/i32/")
+    # # mytree = etree.HTML(html)
+    # # print(get_house_href(mytree))
+    # # print(get_next_page(mytree))
+    # print(parse_one_page(html, 'xihu'))
+    main()
 
 
 

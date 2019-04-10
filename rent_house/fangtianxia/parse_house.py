@@ -23,7 +23,7 @@ class HouseInfos(object):
         if not title:
             title = "未知"
         title = title[0]
-        print(title)
+        # print(title)
         self.house_title = title
 
     def get_house_name(self):
