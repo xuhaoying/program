@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -23,8 +23,7 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 # 在程序中， 通过db操作数据库
 db = SQLAlchemy(app)
-print(db)
-
+# print(db)
 
 # 将app交给Manager管理， 由Manager启动程序
 manager = Manager(app)
@@ -170,14 +169,18 @@ def query01():
     # users = db.session.query(Users).filter(Users.age.in_([30, 33])).all()
     # users = db.session.query(Users).filter(Users.age.between(20,40)).all()
     # users = db.session.query(Users).filter_by(id=1).first()
-    # users = db.session.query(Users).order_by("age desc").all()
-    # users = db.session.query(Users).order_by("age desc, id").all()
-    users = db.session.query(func.sum(Users.age)).all()
+    # users = db.session.query(Users).order_by('age desc').all()
+    users = db.session.query(Users).order_by("age desc, id").all()
+    # users = db.session.query(func.sum(Users.age)).all()
     print(users)
     return "查询数据成功"
 
 @app.route('/05query')
-def query05():
+def query05(): 
+    pageSize = 5
+    page = int(request.args.get('page', '1'))
+    # 跳过(page-1)*pageSize条数据再获取pageSize条数据
+    ost = (page-1) * pageSize
     # 客户端向服务端要数据, 使用get请求
     # 判断是否有kw参数, 如果没有则为''
     kw = request.args.get('kw', '')
@@ -185,12 +188,30 @@ def query05():
         users = db.session.query(Users).filter(
             or_(Users.username.like('%{}%'.format(kw)), 
             Users.email.like('%{}%'.format(kw))
-            )).all()
+            ))
     else:
-        users = db.session.query(Users).all()
+        users = db.session.query(Users)
     if not users:
-        users = db.session.query(Users).all()
-    return render_template('05query.html', users=users, kw=kw)
+        users = db.session.query(Users)
+    # 计算尾页页码
+    # 计算总记录数并将结果保存在totalCount中
+    totalCount = len(users.all())
+
+    users = users.offset(ost).limit(pageSize).all()
+    # 通过totalCount和pageSize计算尾页, 向上取整
+    lastPage = math.ceil(totalCount / pageSize)
+    # 通过page计算上一页(prevPage)和下一页(nextPage)
+    prevPage = 1
+    if page > 1:
+        prevPage = page - 1
+    
+    nextPage = lastPage
+    if page < lastPage:
+        nextPage = page + 1
+    
+    # print(page ,lastPage ,prevPage ,nextPage )
+    return render_template('05query.html', users=users, kw=kw,
+    page=page, lastPage=lastPage, prevPage=prevPage, nextPage=nextPage)
 
 @app.route('/05page')
 def page_views():
@@ -220,20 +241,89 @@ def page_views():
 
 @app.route('/06aggregate')
 def aggregate_views():
-    result = db.session.query(func.sum(Users.age)).all()
-    print(result)
-    print('age sum : %d' % result[0])
-    result = db.session.query(func.avg(Users.age),
-    func.max(Users.age), func.min(Users.age)
-    ).all()
-    print(result)
-    result = result[0]
-    avg_age,  max_age, min_age = result[0], result[1], result[2]
+    # result = db.session.query(func.sum(Users.age)).all()
+    # print(result)
+    # print('age sum : %d' % result[0])
+    # result = db.session.query(func.avg(Users.age),
+    # func.max(Users.age), func.min(Users.age)
+    # ).all()
+    # print(result)
+    # result = result[0]
+    # avg_age,  max_age, min_age = result[0], result[1], result[2]
     
-    print("avg_age: %.2f" % avg_age)
-    print("max_age: %d" % max_age)
-    print("min_age: %d" % min_age)
+    # print("avg_age: %.2f" % avg_age)
+    # print("max_age: %d" % max_age)
+    # print("min_age: %d" % min_age)
+    # 查询USers实体中, 按isActive分组后每组的人数
+    # db.session.query(查询列, 聚合列).group_by('属性名').all()
+    # result = db.session.query(
+    #     Users.isActive, func.count(Users.isActive)
+    #     ).group_by(Users.isActive).all()
+
+    result = db.session.query(
+        Users.isActive, func.avg(Users.age)
+    ).group_by(Users.isActive).having(func.avg(Users.age)>18).all()
+    print(result)
     return "聚合查询成功"
+
+@app.route('/07aggregate')
+def aggregate07():
+    # 查询Users总年龄
+    res = db.session.query(func.sum(Users.age)).all()
+    print("总年龄:", res)
+    # 查询Users总人数
+    res = db.session.query(func.count(Users.id)).all()
+    print("总人数: ",res)
+    # 查询Users 年龄大于18岁的 人的平均年龄
+    res = db.session.query(func.avg(Users.age)
+        ).filter(Users.age>18).all()
+    print("查询Users 年龄大于18岁的 人的平均年龄", res)
+    # 按 isActive 分组后 组内人数大于2人的(组, 人数)
+    res = db.session.query(
+        Users.isActive, func.count(Users.id)
+        ).group_by(Users.isActive
+        ).having(func.count(Users.id)>2).all()
+    print(" 按 isActive 分组后 组内人数大于2人的(组, 人数)", res)
+    # 年龄大于18的人按isActive分组后, 组内人数大于2人的信息
+    res = db.session.query(
+        Users.isActive, func.count(Users.id)
+        ).filter(Users.age>18).group_by(Users.isActive
+        ).having(func.count(Users.id)>2).all()
+    print(" 年龄大于18的人按isActive分组后, 组内人数大于2人的信息", res)
+    return "分组聚合查询成功"
+
+@app.route('/08update', methods=['GET', 'POST'])
+def update08():
+    '''
+    GET 请求, 接受传递过来的id, 并查询数据显示在08update.html上
+    POST 请求. 接受要修改的数据并更新回数据库
+    '''
+    if request.method == 'GET':
+        id = int(request.args.get('id', '0'))
+        user = Users.query.filter_by(id=id).first()
+        return render_template('08update.html', user=user)
+    else:
+        id = int(request.form.get('id', '0'))
+        user = Users.query.filter_by(id=id).first()    
+        user.username = request.form['username']
+        user.age = request.form['age']
+        user.email = request.form['email']
+        user.isActive = False
+        if 'isActive' in request.form:
+            user.isActive = True
+        db.session.add(user)
+        return '''<script>
+                alert('修改成功'); 
+                location.href='/05query';
+                </script>'''
+
+@app.route('/09delete')
+def delete09():
+    id = int(request.args.get('id', '0'))
+    user = Users.query.filter_by(id=id).first()
+    db.session.delete(user)
+    return redirect('/05query')
+    
 
 
 if __name__ == "__main__":

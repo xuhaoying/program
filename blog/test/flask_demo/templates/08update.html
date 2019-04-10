@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改数据</title>
+</head>
+<body>
+    <form action="/08update" method="post">
+        <p>
+            <input type="hidden" name="id" value="{{user.id}}" >
+        </p>
+        <p>
+            用户名称: <input type="text" name="username" value="{{user.username}}">
+        </p>
+        <p>
+            用户年龄: <input type="number" name="age" value="{{user.age}}">
+        </p>
+        <p>
+            电子邮件: <input type="email" name="email" value="{{user.email}}">
+        </p>
+        <p>
+            是否启用: <input type="checkbox" name="isActive"
+            {% if user.isActive %} checked {% endif %}>
+        </p>
+        <p>
+           <input type="submit" name="修改">
+        </p>
+        
+
+
+    </form>
+</body>
+</html>

@@ -17,6 +17,7 @@
                 <th>姓名</th>
                 <th>年龄</th>
                 <th>邮箱</th>
+                <th>状态</th>
                 <th>操作</th>
             </tr>
             {% for user in users %}
@@ -24,12 +25,38 @@
                 <td>{{user.username}}</td>
                 <td>{{user.age}}</td>
                 <td>{{user.email}}</td>
+                
                 <td> 
-                    <a href="#">删除</a>
-                    <a href="#">修改</a>
+                    {% if user.isActive %}
+                        启用
+                    {% else %}
+                        禁用
+                    {% endif %}
+                </td>
+                <td> 
+                    <a href="/09delete?id={{user.id}}">删除</a>
+
+                    <a href="/08update?id={{user.id}}">修改</a>
                 </td>
             </tr>
             {% endfor %}
+            <tr colspan="5">
+                <a href="/05query?page=1
+                {% if kw %} &kw={{kw}} {% endif %}">首页</a>
+                <a href="/05query?page={{prevPage}}
+                {% if kw %} &kw={{kw}} {% endif %}">上一页</a>
+                <a href="/05query?page={{nextPage}}
+                {% if kw %} &kw={{kw}} {% endif %}">下一页</a>
+                <a href="/05query?page={{lastPage}}
+                {% if kw %} &kw={{kw}} {% endif %}">尾页</a>
+            </tr>
         </table>
+        <p>
+            <a href="/02register">添加用户</a>
+       </p>
+        <p>
+            当前查看的页数为第 <strong>{{ page }}</strong> 页
+        </p>
+
 </body>
 </html>

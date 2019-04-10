@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册老师</title>
+</head>
+<body>
+    <form method="post" action="/01regtea" enctype="multipart/form-data">
+        <p>
+            姓名 <input type="text" name="tname" >
+        </p>
+        <p>
+            年龄 <input type="text" name="tage" >
+        </p>
+        
+        <select name="course">
+            {% for course in courses %}
+            <option value="{{course.id}}">{{course.cname}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="注册" >
+    </form>
+</body>
+</html>
