@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form action="/regstu" method="post" enctype="multipart/form-data">
+        <p>
+            学员姓名: <input type="text" name="sname">
+        </p>
+        <p>
+            学员年龄: <input type="number" name="sage">
+        </p>
+        <p>
+            是否启用: <input type="checkbox" name="isActive">
+        </p>
+        <div>选修课程
+        <select name="courses" multiple>
+            {% for course in courses %}
+                <option value="{{course.id}}">{{course.cname}}</option>
+            {% endfor %}
+        </select>
+        </div>
+        <p>
+            <input type="submit" value="注册" >
+        </p>
+    </form>
+</body>
+</html>

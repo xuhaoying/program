@@ -6,27 +6,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>课程对应的老师们</title>
     <script>
-        function change_course(cour){   
-            id = cour.options[cour.options.selectedIndex].value;  
-            window.location.href="/02query?id=" + id
-        } 
+        window.onload = function(){
+            document.getElementById('selCourse').onchange = function(){
+                // alert("当前选择的课程为"+this.value);
+                window.location.href="/02query?cid=" + this.value;
+            }
+        }
     </script>
 </head>
 <body>
-        <select name="course" 
-        onchange="change_course(this)">
+    <div> 
+        课程 
+        <select name="course" id="selCourse">
                 <option id="0" value="0">请选择</option>
                 {% for course in courses %}
-                <option id={{course.id}}" value="{{course.id}}">
+                <option value="{{course.id}}"
+                    {% if cid == course.id %}
+                        selected
+                    {% endif %}>
                     {{course.cname}}
                 </option>
                 {% endfor %}
         </select>
+    </div>
         <table  border='1px' width="600px">
             <tr>
                 <th>姓名</th>
                 <th>年龄</th>
-                <th>教授课程名称</th>
+                <th>课程</th>
             </tr>
             {% for tea in teachers %}
                 <tr>
