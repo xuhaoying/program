@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+        // window.alert(window.XMLHttpRequest);
+        function testXhr(){
+            // if(window.XMLHttpRequest){
+            //     var xhr = new XMLHttpRequest();
+            // } else {
+            //     var xhr = new ActiveXObject("Microsoft.XMLHttp");
+            // }
+            var xhr = createXhr();
+            alert(xhr);
+            xhr.onreadystatechange = function(){
+                if ((xhr.readState == 4)&&(xhr.status == 200)){
+                    // 可以接收响应数据
+                    console.log(xhr.responseText)
+                    alert(xhr.responseText)
+                }
+            }
+        }
+
+        // 点击按钮， 显示文本在按钮下方
+        function showAjax(){
+            // 创建 xhr 对象 - createXhr()
+            var xhr = createXhr();
+            // alert(xhr);
+            // 创建请求 - open()
+            xhr.open('get', '/01server', true);
+            // 设置回调函数 - onreadystatechange 判断状态并接收数据
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState == 4 && xhr.status == 200){
+                    // 可以接收响应数据
+                    var resT = xhr.responseText;
+                    $("#show").html(resT)
+                }
+            }
+            // 发送请求
+            xhr.send(null);
+        }
+    </script>
+</head>
+<body>
+    <button onclick="testXhr()">测试xhr</button>
+    <button onclick="showAjax()">显示</button>
+    <a href="/01server">显示(非AJAX)</a>
+    <div id="show"></div>
+</body>
+</html>

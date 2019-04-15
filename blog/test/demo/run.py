@@ -1,8 +1,39 @@
 from flask import Flask, make_response, request, render_template
 from flask import session
+from flask_sqlalchemy import SQLAlchemy
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+
+import json
 
 app = Flask(__name__)
+# 配置数据库
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:123456@localhost:3306/ajax"
+# 不追踪
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# 调试模式
+app.config['DEBUG'] = True
+
+# 配置数据库操作的自动提交
+app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
+
 app.config['SECRET_KEY'] = 'whatever'
+
+db = SQLAlchemy(app)
+manager = Manager(app)
+migrate = Migrate(app, db)
+manager.add_command('db', MigrateCommand)
+
+
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    uname = db.Column(db.String(80), nullable=False, unique=True, index=True)
+    upwd = db.Column(db.String(20), nullable=False)
+    uphone = db.Column(db.String(20), unique=True) 
+    uemail = db.Column(db.String(120),unique=True)
+
+
 
 @app.route('/01setcookie')
 def set_cookie():
@@ -103,12 +134,90 @@ def getsession():
     print('password', password)
     return '获取session成功'
 
-@app.route('/01xml')
-def xml01():
-    return render_template('01xml.html')
+@app.route('/01-ajax-get')
+def ajax_get():
+    return render_template('/01-ajax-get.html')
 
+@app.route('/01server')
+def server01():
+    return "这是使用 AJAX 方式发送的请求"
 
+@app.route('/loginuser')
+def user_login():
+    return render_template('loginuser.html')
+   
+
+@app.route('/02server')
+def server02():
+    uphone = request.args.get('uphone')
+    ret = User.query.filter_by(uphone=uphone).first()
+    if ret:
+        # 返回状态值，而不是具体存在的文本
+        return '0'  # "该电话号码已被注册"
+    return '1'  # "可以注册"
+
+@app.route("/03post")
+def post_views():
+    return render_template("03post.html")
+
+@app.route("/03server01",  methods=['POST'])
+def server03_01():
+    # 接受前端传递的数据
+    uname = request.form.get('uname')
+    upwd = request.form.get('upwd')
+    # 将数据再响应给前端
+    return """
+    注册成功 <br>
+    用户名： {} <br>
+    密码： {} <br>
+    """.format(uname, upwd)
+
+@app.route("/03server02",  methods=['POST'])
+def server03_02():
+    # 接受前端传递的数据
+    uname = request.form.get('uname')
+    upwd = request.form.get('upwd')
+    # 将数据再响应给前端
+    return """
+    注册成功 <br>
+    用户名： {} <br>
+    密码： {} <br>
+    """.format(uname, upwd)
+
+@app.route('/03server03', methods=['POST'])
+def server03_03():
+    user = User()
+    uphone = request.form.get('uphone')
+    uname = request.form.get('uname')
+    upwd = request.form.get('upwd')
+    uemail = request.form.get('uemail')
+
+    user.uphone  = uphone 
+    user.uname  = uname 
+    user.upwd  = upwd 
+    user.uemail  = uemail 
+    try:
+        db.session.add(user)
+        return '1'
+    except Exception as e:
+        print(e)
+        return '0'
+
+@app.route('/04users')
+def users():
+    return render_template('04users.html')
+
+@app.route('/04server')
+def server04():
+    users = User.query.all()
+    print(users)
+    return "ok"
+
+@app.route('/jsview')
+def js_view():
+    return render_template("JavaScriptObject.html")
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True) 
+    manager.run()

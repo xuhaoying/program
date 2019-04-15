@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login user</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+        // 每个都需要查重，用一个函数做状态，其余函数返回
+        function duplcheck(name){
+            var ret = null;
+            // 创建 xhr 对象 - createXhr()
+            var xhr = createXhr();
+            // alert(xhr);
+            xhr.open('get', '/02server?uphone='+$('#uphone').val(), false);
+            // 设置回调函数 - onreadystatechange 判断状态并接收数据
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState == 4 && xhr.status == 200){
+                    // 可以接收响应数据
+                    if (xhr.responseText == '1'){
+                        ret = true   // 可以注册
+                    } else {
+                        ret = false  // 将返回值设置为 false 表示不能注册
+                    }
+                }
+            }
+            // 发送请求
+            xhr.send(null);
+            return ret;
+        }
+
+        function checkPhone(){
+            var ret = null;
+            // 创建 xhr 对象 - createXhr()
+            var xhr = createXhr();
+            // alert(xhr);
+            // 创建请求 - open()
+            // 由异步变为同步， 等得到返回结果后再向下执行， 
+            // 不然异步的时候发送数据之后还未接收到数据就向下执行，返回的ret为null
+            xhr.open('get', '/02server?uphone='+$('#uphone').val(), false);
+            // 设置回调函数 - onreadystatechange 判断状态并接收数据
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState == 4 && xhr.status == 200){
+                    // 可以接收响应数据
+                    if (xhr.responseText == '1'){
+                        ret = true   // 可以注册
+                    } else {
+                        ret = false  // 将返回值设置为 false 表示不能注册
+                    }
+                }
+            }
+            // 发送请求
+            xhr.send(null);
+
+            // alert("check return  "+ret);
+            
+            return ret;
+        }
+
+        function showPhone(){
+            // 只负责向后端发送请求，判断电话号码是否存在， 并得到结果
+            var ret=checkPhone();
+            // alert("checkPhone() 返回值 "+ret);
+            if (ret){
+                $("#checkPhone").html("可以注册");
+            } else {
+                $("#checkPhone").html("电话号码已经存在，请重新输入");
+            }
+        }
+
+        // 调用 checkPhone() 并得到结果， 并给出提示到网页上
+        function submitData(){
+            // 如果电话号码已存在， 则提示不允许注册
+            if (checkPhone() == false){
+                alert("电话号码已存在，请重新输入");
+            }
+            if (checkPhone()){
+                // 获取xhr
+                var xhr = createXhr();
+                // 创建请求
+                xhr.open('post', '/03server03', true);
+                // 设置回调函数 
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200){
+                        // 可以接收响应数据
+                        if (xhr.responseText == '1'){
+                        alert("注册成功")   // 可以注册
+                    } else {
+                        alert("注册失败")  // 将返回值设置为 false 表示不能注册
+                    }
+                    }
+                }
+                // 设置 Content-Type 请求头
+                xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+                var uname = $("[name='uname']").val();
+                var upwd = $("[name='upwd']").val();
+                var uphone = $("[name='uphone']").val();
+                var uemail = $("[name='uemail']").val();
+                // 发送请求
+                var msg = "uname="+uname+"&upwd="+upwd+"&uphone="+uphone+"&uemail="+uemail;
+                xhr.send(msg);
+        
+            }
+        }
+    
+    </script>
+</head>
+<body>
+    <form action="/loginuser" method="post" enctype="multipart/form-data">
+        <p>
+            电话号码：
+            <input type="tel" name="uphone" id="uphone"
+            onclick="showPhone()">
+            <span id="checkPhone"></span>
+        </p>
+        <p>
+            用户名：
+            <input type="text" name="uname">
+        </p>
+        <p>
+            密码：
+            <input type="password" name="upwd">
+        </p>
+        <p>
+            电子邮件：
+            <input type="email" name="uemail">
+        </p>
+        <p>
+            <input type="button" value="提交" onclick="submitData()" >
+        </p>
+        <div id="show"></div>
+
+    </form>
+</body>
+</html>
