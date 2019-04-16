@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        // $.get(url, data, callback, type)
+
+        $(function(){
+            $("#uemail").click(function(){
+                /*
+                 $.get(url[, data][, callback][, type])
+                 url 请求地址
+                 data 要传递的参数 
+                        name1=val1&name2=val2
+                        {name1:"val1", name2:"val2"}
+                callback  请求响应成功后的回调函数 
+                        function(data){data表示响应回来的数据}
+                type  指定响应回来的数据的结构类型
+                */
+                var params = "uemail="+$("#uemail").val();
+                $.get("/exc-server", params, function(data){
+                    if (data.errMsg){
+                        alert(data.errMsg);
+                    } else {
+                        console.log(data);
+                        console.log("data的类型 "+typeof(data));
+                        html = "";
+                        for (i in data){
+                            html += data[i].uemail +"<br>";
+                            console.log("匹配到的邮箱 " +data[i].uemail);
+                        }
+                        $("#show-email").html(html)
+                    }
+                }, "json")
+            });
+        });
+    </script>
+</head>
+<body>
+    <p>
+        电子邮箱:
+        <input type="email" id="uemail">
+    </p>
+    <div id="show-email"></div>
+</body>
+</html>

@@ -370,6 +370,22 @@ def server08():
         }
     return json.dumps(dic)
 
+@app.route("/getemail")
+def get_email():
+    return render_template("exc-email.html")
+
+@app.route("/exc-server")
+def exc_server():
+    uemail = request.args.get("uemail")
+    users = User.query.filter(User.uemail.like("%{}%".format(uemail))).all()
+    if users:
+        users_lst = [user.to_dict() for user in users]
+        return json.dumps(users_lst)
+    dic = {
+        "errMsg": "暂无数据"
+    }
+    return json.dumps(dic)
+
 
 if __name__ == '__main__':
     # app.run(debug=True) 
