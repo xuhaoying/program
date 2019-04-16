@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        $(function(){
+            $("#btnLoad").click(function(){
+                // 参数传递 ： 通过字符串表示参数 get
+                // var params = "uname=Maria&uage=30";
+                // POST 传参
+                var params = {
+                    "uname": "Maria",
+                    "uage": 30
+                }
+                $("#showTemp").load("/07temp", params, function(){
+                    window.setTimeout(function(){
+                        $("#showTemp").hide(3000)
+                    }, 3000);
+                });
+            })
+        })
+        
+    </script>
+    <style>
+        h1{
+            background: turquoise;
+        }
+    </style>
+</head>
+<body>
+    <button id="btnLoad">加载/07temp到网页中</button>
+    <div id="showTemp"></div>
+</body>
+</html>

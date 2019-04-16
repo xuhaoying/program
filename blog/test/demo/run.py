@@ -33,6 +33,50 @@ class User(db.Model):
     uphone = db.Column(db.String(20), unique=True) 
     uemail = db.Column(db.String(120),unique=True)
 
+    # 创建一个方法，负责将本类的属性们转换为字典
+    def to_dict(self):
+        dic = {
+            'id': self.id,
+            'uname': self.uname,
+            'upwd': self.upwd,
+            'uphone': self.uphone,
+            'uemail': self.uemail ,
+        }
+        return dic
+
+
+class Province(db.Model):
+    __tablename__ = 'province'
+    id = db.Column(db.Integer, primary_key=True)
+    pname = db.Column(db.String(32), unique=True)
+    citys = db.relationship(
+                'City', 
+                backref='subprovince', 
+                lazy='dynamic'
+                )
+    
+    def to_dict(self):
+        dic = {
+            "id": self.id,
+            "pname": self.pname,
+        }
+        return dic
+
+
+class City(db.Model):
+    __tablename__ = 'city'
+    id = db.Column(db.Integer, primary_key=True)
+    cname = db.Column(db.String(32), unique=True)
+    # 外键
+    pid = db.Column(db.Integer, db.ForeignKey('province.id'))
+
+    def to_dict(self):
+        dic = {
+            "id": self.id,
+            "cname": self.cname,
+            "pid": self.pid,
+        }
+        return dic
 
 
 @app.route('/01setcookie')
@@ -215,7 +259,116 @@ def server04():
 
 @app.route('/jsview')
 def js_view():
-    return render_template("JavaScriptObject.html")
+    # 使用 Python 字典表示 json 的单个对象
+    obj = {
+    "uname": "Maria",
+    "uage": 30,
+    "gender": "Female"
+    }
+    
+
+    obj = [
+        {
+        "uname": "Maria",
+        "uage": 30,
+        "gender": "Female"
+        },
+        {
+        "uname": "Alice",
+        "uage": 26,
+        "gender": "Female"
+        },
+        {
+        "uname": "Tom",
+        "uage": 38,
+        "gender": "Male"
+        },
+    ]
+    print("转换之前, obj数据类型 ", type(obj))
+    jsonStr = json.dumps(obj)
+    print("转换之前, jsonStr数据类型 ", type(jsonStr))
+
+    return jsonStr
+
+@app.route('/05json')
+def sql_json():
+    users = User.query.all()
+    user_list = [
+        {
+        "uname": user.uname,
+        "upwd": user.upwd,
+        "uphone": user.uphone,
+        "uemail": user.uemail,
+        } for user in users
+        ]
+
+    user_list = [
+        user.to_dict() for user in users
+    ]
+
+    return json.dumps(user_list)
+
+@app.route('/05temp')
+def temp05():
+    return render_template('05json.html')
+
+@app.route("/citys")
+def citys():
+    return render_template("citys.html")
+
+@app.route("/getPro")
+def get_pro():
+    # 获取province中所有的数据并封装成JSON返回
+    province = Province.query.all()
+    proList = [
+        pro.to_dict() for pro in province
+    ]
+    return json.dumps(proList)
+
+@app.route("/getCity")
+def get_city():
+    # 接受前段传递过来的省份 id
+    pid = request.args.get('pid')
+    # 根据 pid 获取对应的城市信息
+    citys = City.query.filter_by(pid=pid).all()
+    cityList = [
+        city.to_dict() for city in citys
+    ]
+    return json.dumps(cityList)
+
+@app.route('/07temp',methods=['GET', 'POST'])
+def temp07():
+    # 接受参数
+    # uname = request.args.get("uname")
+    # uage = request.args.get("uage")
+    
+    uname = request.form.get("uname")
+    uage = request.form.get("uage")
+
+    print("uname >> ", uname)
+    print("uage >> ", uage)
+    return render_template("07temp.html")
+
+@app.route('/07load')
+def load07():
+    return render_template('07load.html')
+
+@app.route("/08jqget")
+def jq_get():
+    return render_template("08jqget.html")
+
+@app.route("/08server")
+def server08():
+    # 接收前段传递过来的参数 uname
+    uname = request.args.get("uname")
+    # 根据 uname 的值去数据库中查询对应的 users 的信息
+    user = User.query.filter_by(uname=uname).first()
+    if user:
+        return json.dumps(user.to_dict())
+    dic = {
+        "errMsg": "查无此人"
+        }
+    return json.dumps(dic)
 
 
 if __name__ == '__main__':
