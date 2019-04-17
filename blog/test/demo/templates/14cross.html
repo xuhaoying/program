@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        function showMsg(data){
+            html = ""
+            html += "<p>航班号:  " + data.fightNo + "</p>"
+            html += "<p>出发: " + data.from + "</p>"
+            html += "<p>到达: " + data.to + "</p>"
+            html += "<p>时间: " + data.time + "</p>"
+            console.log(html);
+            $("#showMsg").html(html)
+
+        };
+
+        $(function (){
+            $("#btnShow").click(function(){
+                // 加载JS文件
+                // 动态创建 script 标签
+                var script = document.createElement("script");
+                // 动态制定 script 标签的 属性
+                // script.src = "/static/js/11cross.js"
+                script.src = "http://127.0.0.1:5000/14server?callback=showMsg"
+                script.type = "text/javascript"
+                // 将 script 标签加载到当前网页 中
+                var body = $("body")[0];
+                body.append(script);
+            })
+        
+            $("#btnJQ").click(function(){
+                $.ajax({
+                    url: "http://127.0.0.1:5000/14server",
+                    type: 'get',
+                    dataType: "jsonp",  // 自动包裹实现跨域请求
+                    jsonp: "callback", // 定义跨域callback参数名
+                    jsonpCallback: 'showMsg', // 定义跨域的回调函数名  
+                    success: function(data){
+                        console.log(data);
+                    }
+                })
+            });
+        })
+        
+    </script>
+</head>
+<body>
+    <button id="btnShow">显示</button>
+    <button id="btnJQ">显示JQ</button>
+    <div id="showMsg"></div>
+</body>
+</html>

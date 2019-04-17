@@ -10,7 +10,7 @@
         // $.get(url, data, callback, type)
 
         $(function(){
-            $("#uemail").click(function(){
+            $("#kw").keyup(function(){
                 /*
                  $.get(url[, data][, callback][, type])
                  url 请求地址
@@ -21,30 +21,59 @@
                         function(data){data表示响应回来的数据}
                 type  指定响应回来的数据的结构类型
                 */
-                var params = "uemail="+$("#uemail").val();
-                $.get("/exc-server", params, function(data){
+                if(this.value==""){
+                    alert("暂无数据");
+                } else {
+                    var params = "kw="+this.value;
+                    $.get("/exc-server", params, function(data){
                     if (data.errMsg){
-                        alert(data.errMsg);
+                        // 没有匹配到，清空提示框里的内容，并隐藏
+                        $(".content").html("")
+                        $(".content").css("display", "none");
+                        // alert(data.errMsg);
                     } else {
-                        console.log(data);
-                        console.log("data的类型 "+typeof(data));
+                        // 显示提示框以及文本
+                        $(".content").css("display", "block");
                         html = "";
                         for (i in data){
-                            html += data[i].uemail +"<br>";
+                            html += "<p>" + data[i].uemail +"</p>";
                             console.log("匹配到的邮箱 " +data[i].uemail);
+                            }
+                        $(".content").html(html)
                         }
-                        $("#show-email").html(html)
-                    }
-                }, "json")
+                    }, "json")
+                }
+             
             });
         });
     </script>
+    <style>
+        body{
+            background: #e5e2e2;
+        }
+        .container{
+            position: relative;
+        }
+        .content{
+            border: qpx solid #000;
+            padding: 15px;
+            background: #fff;
+            width: 300px;
+            position: absolute;
+            top: 33px;
+            left: 80px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <p>
-        电子邮箱:
-        <input type="email" id="uemail">
-    </p>
-    <div id="show-email"></div>
+    <div class="container">
+        <p>
+            电子邮箱:
+            <input type="email" id="kw">
+        </p>
+        <div class="content"></div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        function showMsg(data){
+            //  data /13server 查询出来的信息
+            // 该方法由 /13server 响应时调用
+            // console.log(data)
+            for (var i in data){
+                console.log(data[i])
+            }
+        };
+
+        $(function (){
+            $("#btnGet").click(function(){
+                $.get("http://127.0.0.1:5000/12js", function(){
+                    console.log("发动的是否收到了")
+                })
+            });
+
+            $("#btnJS").click(function(){
+                // 加载JS文件
+                // 动态创建 script 标签
+                var script = document.createElement("script");
+                // 动态制定 script 标签的 属性
+                // script.src = "/static/js/11cross.js"
+                script.src = "http://127.0.0.1:5000/13server?callback=showMsg"
+                script.type = "text/javascript"
+                // 将 script 标签加载到当前网页 中
+                var body = $("body")[0];
+                body.append(script);
+        })
+        })
+        
+    </script>
+</head>
+<body>
+    <button id="btnGet">请求</button>
+    <button id="btnJS">请求JS文件</button>
+</body>
+</html>

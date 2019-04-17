@@ -9,54 +9,49 @@
     <script src="/static/js/common.js"></script>
     <script>
         function loadPro(){
-            var xhr = createXhr();
-            xhr.open('get', '/getPro', false);
-            xhr.onreadystatechange = function(){
-                if (xhr.readyState==4 && xhr.status==200){
-                    var pros = JSON.parse(xhr.responseText);
-                    html = ""
-                    for (i in pros){
-                        html += "<option value='"+pros[i].id+"'>"
-                        html += pros[i].pname
-                        html += "</option>"
-                    }
-                    $("#selPro").html(html);
-                }
-            }
-            xhr.send(null);
+            $.ajax({
+                    "url": "/getPro",
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function(data){
+                        html = ""
+                        for (i in data){
+                        html += "<option value='"+data[i].id+"'>"
+                        html += data[i].pname;
+                        html += "</option>";
+                        }
+                        $("#selPro").html(html);
+                    },
+                });
         }
+     
 
         function loadCity(pid){
-            /*
-            根据省份 ID 查询出对应的城市的信息
-            pid 省份id
-            */
-            var xhr = createXhr();
-            xhr.open('get', '/getCity?pid='+pid, true);
-            xhr.onreadystatechange = function(){
-                if (xhr.readyState==4 && xhr.status==200){
-                    var cities = JSON.parse(xhr.responseText);
-                    // console.log(cities);
+            $.ajax({
+                url: '/getCity?pid='+pid,
+                type: "get",
+                dataType: "json",
+                success: function(data){
                     html = ""
-                    for (i in cities){
-                        html += "<option value='"+cities[i].id+"'>"
-                        html += cities[i].cname
-                        html += "</option>"
-                    }
-                    $("#selCity").html(html)
-                }
-            }
-            xhr.send(null)
+                    for (i in data){
+                        html += "<option value='"+data[i].id+"'>";
+                        html += data[i].cname;
+                        html += "</option>";
+                    };
+                    $("#selCity").html(html);
+                },
+            });
         }
-
-
+           
         $(function(){
             // DOM树 加载完毕调用
             loadPro();
             $("#selPro").change(function(){
+                console.log("$('#selPro').value  "+$("#selPro").val());
                 loadCity(this.value);
             });
-            // console.log("$('#selPro').value  "+$("#selPro").val());
+            
             // 根据默认选择的省份信息取加载城市信息
             loadCity($("#selPro").val());
 

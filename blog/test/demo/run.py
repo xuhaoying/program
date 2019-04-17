@@ -376,8 +376,11 @@ def get_email():
 
 @app.route("/exc-server")
 def exc_server():
-    uemail = request.args.get("uemail")
-    users = User.query.filter(User.uemail.like("%{}%".format(uemail))).all()
+    # 接收前段传递过来的参数 kw
+    # 根据 kw 去 uemail 中模糊查询
+    # 将查询出的内容构建成 JSON 串再响应
+    kw = request.args.get("kw")
+    users = User.query.filter(User.uemail.like("%{}%".format(kw))).all()
     if users:
         users_lst = [user.to_dict() for user in users]
         return json.dumps(users_lst)
@@ -385,6 +388,60 @@ def exc_server():
         "errMsg": "暂无数据"
     }
     return json.dumps(dic)
+
+@app.route("/10ajax")
+def ajax10():
+    return render_template("10ajax.html")
+
+@app.route("/10server")
+def server10():
+    users = User.query.all()
+    usersList = [user.to_dict() for user in users]
+    return json.dumps(usersList)
+
+@app.route("/11cross")
+def corss_vies():
+    return render_template("11cross.html")
+
+@app.route("/11server")
+def server11():
+    return "这是11cross.html"
+
+@app.route("/12js")
+def js12_view():
+    return "console.log('这是/12js的响应内容')"
+
+@app.route("/13cross")
+def cross13():
+    return render_template("13cross.html")
+
+@app.route("/13server")
+def server13():
+    # 接受前段传入的callback 表示
+    cb = request.args.get("callback")
+    users = User.query.all()
+    # userList = [user.to_dict() for user in users]
+    userList = [user.to_dict() for user in users]
+    userStr = json.dumps(userList)
+    return "{}({})".format(cb, userStr)
+
+@app.route("/14cross")
+def cross14():
+    return render_template("14cross.html")
+
+@app.route("/14server")
+def server14():
+    cb = request.args.get("callback")
+    # 航班信息
+    dic = {
+        "fightNo":  "CA768",
+        "from":  "Beijing",
+        "to":  "Shanghai" ,
+        "time":  "15:15",
+    }
+    data = json.dumps(dic)
+    return "{}({})".format(cb, data)
+    # return data
 
 
 if __name__ == '__main__':
