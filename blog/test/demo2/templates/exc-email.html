@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        // $.get(url, data, callback, type)
+
+        $(function(){
+            $("#kw").keyup(function(){
+                /*
+                 $.get(url[, data][, callback][, type])
+                 url 请求地址
+                 data 要传递的参数 
+                        name1=val1&name2=val2
+                        {name1:"val1", name2:"val2"}
+                callback  请求响应成功后的回调函数 
+                        function(data){data表示响应回来的数据}
+                type  指定响应回来的数据的结构类型
+                */
+                if(this.value==""){
+                    alert("暂无数据");
+                } else {
+                    var params = "kw="+this.value;
+                    $.get("/exc-server", params, function(data){
+                    if (data.errMsg){
+                        // 没有匹配到，清空提示框里的内容，并隐藏
+                        $(".content").html("")
+                        $(".content").css("display", "none");
+                        // alert(data.errMsg);
+                    } else {
+                        // 显示提示框以及文本
+                        $(".content").css("display", "block");
+                        html = "";
+                        for (i in data){
+                            html += "<p>" + data[i].uemail +"</p>";
+                            console.log("匹配到的邮箱 " +data[i].uemail);
+                            }
+                        $(".content").html(html)
+                        }
+                    }, "json")
+                }
+             
+            });
+        });
+    </script>
+    <style>
+        body{
+            background: #e5e2e2;
+        }
+        .container{
+            position: relative;
+        }
+        .content{
+            border: qpx solid #000;
+            padding: 15px;
+            background: #fff;
+            width: 300px;
+            position: absolute;
+            top: 33px;
+            left: 80px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <p>
+            电子邮箱:
+            <input type="email" id="kw">
+        </p>
+        <div class="content"></div>
+    </div>
+</body>
+</html>

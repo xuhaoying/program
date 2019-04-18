@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+        function showAll(){
+            var ret = null;
+            // 创建 xhr 对象 - createXhr()
+            var xhr = createXhr();
+            // alert(xhr);
+            xhr.open('get', '/04server', true);
+            // 设置回调函数 - onreadystatechange 判断状态并接收数据
+            xhr.onreadystatechange = function(){
+                if (xhr.readyState == 4 && xhr.status == 200){
+                    // 可以接收响应数据
+                    if (xhr.responseText == '1'){
+                        ret = true   // 可以注册
+                    } else {
+                        ret = false  // 将返回值设置为 false 表示不能注册
+                    }
+                }
+            }
+            // 发送请求
+            xhr.send(null);
+        }
+    </script>
+</head>
+<body>
+    <button onclick="showAll()">查询</button>
+    <table border="1px" width="600px">
+        <tr>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>电话</th>
+            <th>邮箱</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</body>
+</html>

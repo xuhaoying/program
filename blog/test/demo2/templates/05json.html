@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+        $(function(){
+            $("#btnAjx").click(function(){
+                // 创建 xhr 对象 - createXhr()
+                var xhr = createXhr();
+                // alert(xhr);
+                xhr.open('get', '/05json', true);
+                // 设置回调函数 - onreadystatechange 判断状态并接收数据
+                xhr.onreadystatechange = function(){
+                    if (xhr.readyState == 4 && xhr.status == 200){
+                        // 可以接收响应数据, str
+                        var resT = xhr.responseText;
+                        console.log(resT);
+                        console.log(typeof(resT));
+                        // 将 JSON 格式的字符串转换为 JS 对象
+                        var arr = JSON.parse(resT);
+                        console.log(arr);
+                        console.log(typeof(arr));
+                        html = "";
+                        for (i in arr){
+                           html += "<tr>"
+                           html += "<td>" + arr[i].uname + "</td>"
+                           html += "<td>" + arr[i].upwd + "</td>"
+                           html += "<td>" + arr[i].uphone + "</td>"
+                           html += "<td>" + arr[i].uemail + "</td>"
+                           html += "</tr>"
+                        };
+                        $("#tbody").html(html);
+                    }
+                }
+                // 发送请求
+                xhr.send(null);
+                })
+        })
+    </script>
+</head>
+<body>
+    <button id="btnAjx">请求数据</button>
+    <table border="1px" width="600px" text-align="center">
+        <tr>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>电话</th>
+            <th>邮箱</th>
+        </tr>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+</body>
+</html>

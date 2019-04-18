@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script>
+        function loadPro(){
+            $.ajax({
+                    "url": "/getPro",
+                    type: "get",
+                    dataType: "json",
+                    async: false,
+                    success: function(data){
+                        html = ""
+                        for (i in data){
+                        html += "<option value='"+data[i].id+"'>"
+                        html += data[i].pname;
+                        html += "</option>";
+                        }
+                        $("#selPro").html(html);
+                    },
+                });
+        }
+     
+
+        function loadCity(pid){
+            $.ajax({
+                url: '/getCity?pid='+pid,
+                type: "get",
+                dataType: "json",
+                success: function(data){
+                    html = ""
+                    for (i in data){
+                        html += "<option value='"+data[i].id+"'>";
+                        html += data[i].cname;
+                        html += "</option>";
+                    };
+                    $("#selCity").html(html);
+                },
+            });
+        }
+           
+        $(function(){
+            // DOM树 加载完毕调用
+            loadPro();
+            $("#selPro").change(function(){
+                console.log("$('#selPro').value  "+$("#selPro").val());
+                loadCity(this.value);
+            });
+            
+            // 根据默认选择的省份信息取加载城市信息
+            loadCity($("#selPro").val());
+
+        })
+
+
+       
+    </script>
+</head>
+<body>
+    <select id="selPro"></select>
+    <select id="selCity"></select>
+</body>
+</html>
