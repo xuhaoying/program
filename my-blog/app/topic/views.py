@@ -15,11 +15,16 @@ from app.models import *
 def index():
     cates = Category.query.all()
     # 判断 session 中是否有登录信息, 有的话则取出对应的对象
+
+    # 查询 topic 中前20条数据并放在首页中进行显示
+    topics = Topic.query.limit(20).all()
+
     user = None
     if 'id' in session and 'loginname' in session:
         id = session['id']
         user = User.query.filter_by(ID=id).first()
-    return render_template("index.html", cates=cates, user=user)
+    return render_template("index.html", cates=cates, user=user,
+        topics=topics)
 
 @topic.route("/list")
 def list_category():
