@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'news',
+    'music',
+    'sport',
+    'index',
 ]
 
 MIDDLEWARE = [
@@ -59,8 +63,12 @@ ROOT_URLCONF = 'django_demo.urls'
 
 TEMPLATES = [
     {
+        # 指定使用模板的引擎
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # 指定存放模板的文件夹
+        # 将所有的模板都保存在 项目的 templates 文件夹中
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        # 制定是否要搜索应用(app)中的模板目录
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,5 +136,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
+# 静态文件访问路径
 STATIC_URL = '/static/'
+
+# 静态文件存储路径
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)

@@ -13,18 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
 from .views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^01-show/$', show_views),
-    url(r'^login/$', login),
-    url(r'^register/$', register),
-    url(r'^02-url/(\d{4})/$', url_views),
-    url(r'^03-url/(\d{4})/(\d{1,2})/(\d{1,2})/$', url_views_03),
-    url(r'^04-url/(\S{2,})/(\d{1,2})/$', url_views_04),
+    # 判断路由进入到服务器中的访问地址,是以news作为开始的
+    url(r'^news/', include("news.urls")),
+    url(r'^music/', include("music.urls")),
+    # 没有匹配到上面的话,进入 index
+    url(r'^', include("index.urls")),
 ]
 
 

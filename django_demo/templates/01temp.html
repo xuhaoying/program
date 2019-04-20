@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h2>这是 Django 中的模板</h2>
+    <h2>name: {{ name }}</h2>
+    <h2>age: {{ age }}</h2>
+    <h2>hobby:
+    {% for x in hobby %}
+     {{ x }},
+    {% endfor %} </h2>
+    <h2>hobby.0: {{ hobby.0 }}</h2>
+    <h2>films: {{ films }}</h2>
+    <h2>films.MSN: {{ films.MSN }}</h2>
+    <h2>animal.name: {{ animal.name }}</h2>
+    <h2>animal.eat: {{ animal.eat }}</h2>
+</body>
+</html>
