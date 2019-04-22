@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        {% block title %}
+        01-parent
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" type="text/css" href="/static/css/01parent.css">
+</head>
+<body>
+    <h1>欢迎： {{uname}}</h1>
+    <h1>这是 01-parent 中开始的内容</h1>
+    {% block content %}
+    <h1>这是 01-parent 中允许被修改的内容</h1>
+    {% endblock %}
+    <h1>这是 01-parent 中底部的内容</h1>
+</body>
+</html>
