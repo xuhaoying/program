@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        table{
+            width: 600px;
+        }
+        td{
+            text-align: center;
+        }
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+    <table border=1px>
+        <tr>
+            <th>姓名</th>
+            <th>年龄</th>
+            <th>邮箱</th>
+            <th>操作</th>
+        </tr>
+        {% for au in authors %}
+        <tr>
+            <td>
+                <a href='/05-querybyid/{{au.id}}'>
+                    {{au.name}}
+                </a>
+            </td>
+            <td>{{au.age}}</td>
+            <td>{{au.email}}</td>
+            <td>  
+                <a href='/05-updatebyid/{{au.id}}'>修改</a>
+                <a href='/05-deletebyid/{{au.id}}'>删除</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <div id="showMsg"></div>
+</body>
+</html>
