@@ -20,3 +20,8 @@ urlpatterns = [
     url(r'^06-addage/$', add_age),
     url(r'^07-queryor/$', query_or),
 ]
+
+urlpatterns += [
+    url(r'^08-oto/$', oto_views),
+    url(r'^09-otm/$', otm_views),
+]

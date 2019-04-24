@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import *
 from django.db.models import Avg, Count, F, Q
-
+from wsgiref.simple_server import ServerHandler
 
 # Create your views here.
 def parent_views(request):
@@ -106,3 +106,39 @@ def query_or(request):
     authors = Author.objects.filter(Q(id=1)|Q(age__gt=45))
     print(authors)
     return HttpResponse("查询成功")
+
+def oto_views(request):
+    # 向wife 表中增加对象
+    # 通过外键属性关联属性
+    # wife = Wife()
+    # wife.wname = "Mrs.Peter"
+    # wife.wage = 18
+    # wife.author_id = 2
+    # wife.save()
+
+    # author = Author.objects.get(id=5)
+    # wife = Wife()
+    # wife.wname = "Mrs.Amy"
+    # wife.wage = 19
+    # wife.author = author
+    # wife.save()
+
+    wife = Wife.objects.get(id=1)
+    print("{}'s husband's name is {}.".format(
+            wife.wname,  wife.author.name)
+           )
+    
+    author = Author.objects.get(id=2)
+    print("{}'s wife is {}.".format(
+        author.name, author.wife.wname
+    ))
+
+    return HttpResponse("注册 wife 成功")
+
+def otm_views(request):
+    pub = Publisher.objects.get(id=3)
+    print(pub.book_set.all())
+    print(type(pub.book_set))
+    print("object 类型", type(pub))
+    return HttpResponse("查询数据成功")
+
