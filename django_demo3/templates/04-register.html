@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <form method="post" action="/04-register/">
+        {% csrf_token %}
+        <p>
+            姓名：
+            <input type="text" name="name">
+        </p>
+        <p>
+            年龄：
+            <input type="number" name="age">
+        </p>
+        <p>
+            性别：
+            <input type="radio" name="gender" value="0">男
+            <input type="radio" name="gender" value="1">女
+        </p>
+        <p>
+            爱好：
+            <input type="checkbox" name="hobby" value="1">跑步
+            <input type="checkbox" name="hobby" value="2">绘画
+            <input type="checkbox" name="hobby" value="3">唱歌
+            <input type="checkbox" name="hobby" value="4">编程
+        </p>
+        <p>
+            籍贯：
+            <select name="native_place">
+                <option value="1">北京</option>
+                <option value="2">上海</option>
+                <option value="3">广州</option>
+                <option value="4">深圳</option>
+                <option value="5">杭州</option>
+            </select>
+        </p>
+        <p>
+            <input type="submit" value="提交">
+        </p>
+    </form>
+</body>
+</html>

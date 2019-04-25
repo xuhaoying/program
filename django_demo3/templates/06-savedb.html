@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>form</title>
+</head>
+<body>
+    <form action="/06-savedb/" method="post">
+        {% csrf_token %}
+
+        {% comment "手动解析方式" %}
+        {% for field in form %}
+            <p>
+                {{ field.label }}: {{ field }}
+            </p>
+        {% endfor %}
+        {% endcomment %}
+
+        {{ form.as_p }}
+        <p>
+        <input type="submit" value="提交">
+        </p>
+
+
+    </form>
+
+</body>
+</html>
