@@ -3,9 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>form</title>
+    <style>
+        .form-control{
+            border:none;
+            border-bottom: 1px solid red;
+        }
+    </style>
 </head>
 <body>
-    <form action="/06-savedb/" method="post">
+    <form action="{{ action }}" method="post">
         {% csrf_token %}
 
         {% comment "手动解析方式" %}

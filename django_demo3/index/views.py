@@ -1,7 +1,9 @@
-from django.shortcuts import render
+import json
+from django.shortcuts import render, redirect
+from django.core import serializers
 from django.http import HttpResponse
 from .forms import *
-
+from .models import *
 
 # Create your views here.
 def request_views(request):
@@ -79,13 +81,115 @@ def form_views(request):
 
 def save_db_views(request):
     if request.method == 'GET':
+
         form = RegisterForm()
+        action = "/06-savedb/"
         return render(request, '06-savedb.html', locals())
     else:
         form = RegisterForm(request.POST)
         data = "None"
         if form.is_valid():  # 通过验证
             data = form.cleaned_data
+            # 插入数据库
+            user = Users(**data)
+            user.save()
+            return HttpResponse("插入数据库成功<br>{}".format(data))
+        print(data)
+        return HttpResponse("插入失败<br>{}".format(data))
+
+def login_views(request):
+    if request.method == 'GET':
+        # 判断是否由保存的登录信息，如果有，则显示欢迎xxx
+        uname = request.session.get('uname')
+        print("session", uname)
+        if uname:
+            return HttpResponse("欢迎 {}".format(uname))
+
+        uname = request.COOKIES.get('uname')
+        print("cookie", uname)
+        if uname:
+            return HttpResponse("欢迎 {}".format(uname))
+        # 没有则正常显示登录页面
+        form = LoginForm()
+        action = "/07-login/"
+        return render(request, '06-savedb.html', locals())
+    else:
+        form = LoginForm(request.POST)
+
+        resp = redirect("/07-login")  # 响应对象
+
+        if form.is_valid():  # 通过验证
+            data = form.cleaned_data
+            # 去数据库中验证用户名和密码是否正确
+
+            uname = data.get('uname')
+            upwd = data.get('upwd')
+            save_time = data.get('saveTime')
+            user = Users.objects.filter(uname=uname, upwd=upwd)
+
+            if user:
+                # 保存 cookie 根据保存时长
+                if save_time == '1':
+                    max_age = 0
+                elif save_time == '2':
+                    max_age = 1 * 30 * 24 * 60 * 60
+                elif save_time == '3':
+                    max_age = 6 * 30 * 24 * 60 * 60
+                elif save_time == '4':
+                    max_age = 365 * 24 * 60 * 60
+
+                resp.set_cookie('uname', uname, max_age=max_age)
+                resp.set_cookie('upwd', upwd, max_age=max_age)
+
+                request.session['uname'] = uname
+                request.session['upwd'] = upwd
+                print("request.session >> ", request.session)
+
+                return resp
+
+        return resp
+
+def info_views(request):
+    if request.method == 'GET':
+        form = InfoForm()
+        action = "/08-info/"
+        return render(request, '06-savedb.html', locals())
+    else:
+        form = InfoForm(request.POST)
+        data = "None"
+        if form.is_valid():  # 通过验证
+            data = form.cleaned_data
+            print(data)
         print(data)
         return HttpResponse("{}".format(data))
 
+def server09_views(request):
+    uname = request.GET['uname']
+    uage = request.GET['uage']
+    print(uage, uname)
+    return HttpResponse("这是09-server的响应内容<br> uname: {} <br>uage: {}".format(uname, uage))
+
+def json_views(request):
+    person = {
+        "name": "Maria",
+        "age": 18,
+        "gender": "gril",
+        "email": "maria@163.com",
+    }
+    personStr = json.dumps(person)
+    return HttpResponse(personStr)
+
+def json_users(request):
+    users = Users.objects.all()
+    jsonStr = serializers.serialize("json", users)
+    return HttpResponse(jsonStr)
+
+def ajax_post(request):
+    return render(request, "12-ajax-post.html")
+
+def server12_views(request):
+    uname = request.POST.get('uname')
+    upwd = request.POST.get('upwd')
+    print("uname", uname)
+    print("upwd", upwd)
+    return HttpResponse("uname: {} <br>uage:{}".format(uname, upwd))

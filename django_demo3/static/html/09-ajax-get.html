@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script>
+        $(function () {
+            $("#btnClick").click(function () {
+                // $.get(url, data, callback, type);
+                // var params = "uname=Maria&uage=18";
+                var params = {
+                        "uname": "Maria",
+                        "uage": 18
+                        };
+                $.get("/09-server/", params, function (data) {
+                    $("#show").html(data);
+                });
+            });
+
+            $("#btnJSON").click(function () {
+                $.get("/10-json/", function (data) {
+                    html = ""
+                    html += "<p> name "+ data.name +"<p>"
+                    html += "<p> age " + data.age + "<p>"
+                    html += "<p> gender " + data.gender + "<p>"
+                    html += "<p> email " + data.email + "<p>"
+
+                    $("#show").html(html);
+                }, "json");
+            });
+            
+            $("#btnJSONUsers").click(function () {
+                $.get("/11-json-user/", function (data) {
+                    console.log(data)
+                    for (var i in data){
+                        console.log(data[i])
+                    }
+
+
+                }, "json");
+            })
+            
+        });
+    </script>
+</head>
+<body>
+    <div id="show">这是静态网页</div>
+    <p><button id="btnClick">Send Ajax Request</button></p>
+    <p><button id="btnJSON">Send JSON</button></p>
+    <p><button id="btnJSONUsers">Send Ajax get Users</button></p>
+</body>
+</html>
